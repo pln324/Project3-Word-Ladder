@@ -1,15 +1,15 @@
 /* WORD LADDER Main.java
  * EE422C Project 3 submission by
  * Replace <...> with your actual data.
- * <Student1 Name>
- * <Student1 EID>
- * <Student1 5-digit Unique No.>
- * <Student2 Name>
+ * <Franklin Mao>
+ * <fm8487>
+ * <16295>
+ * <Pierce Nguyen>
  * <Student2 EID>
  * <Student2 5-digit Unique No.>
  * Slip days used: <0>
- * Git URL:
- * Summer 2019
+ * Git URL: https://github.com/EE422C/assignment3-spring-20-sp20-pr3-pair-53
+ * Spring 2020
  */
 
 
@@ -51,8 +51,15 @@ public class Main {
 	 * If command is /quit, return empty ArrayList. 
 	 */
 	public static ArrayList<String> parse(Scanner keyboard) {
-		// TO DO
-		return null;
+		String input = keyboard.nextLine();
+		if(input.equals("/quit"))
+			return new ArrayList<String>();
+		ArrayList<String> words = new ArrayList<>(2);
+		String[] twoWords = input.split(" ");
+		words.add(twoWords[0]);
+		words.add(twoWords[1]);
+
+		return words;
 	}
 	
 	public static ArrayList<String> getWordLadderDFS(String start, String end) {
@@ -73,7 +80,8 @@ public class Main {
     
 	
 	public static void printLadder(ArrayList<String> ladder) {
-		
+		for(String s : ladder)
+			System.out.println(s);
 	}
 	// TODO
 	// Other private static methods here
