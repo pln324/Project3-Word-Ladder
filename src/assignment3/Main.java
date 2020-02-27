@@ -5,8 +5,8 @@
  * <fm8487>
  * <16295>
  * <Pierce Nguyen>
- * <Student2 EID>
- * <Student2 5-digit Unique No.>
+ * <pln324>
+ * <16295>
  * Slip days used: <0>
  * Git URL: https://github.com/EE422C/assignment3-spring-20-sp20-pr3-pair-53
  * Spring 2020
