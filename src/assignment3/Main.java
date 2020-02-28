@@ -38,9 +38,11 @@ public class Main {
 			ps = System.out;			// default output to Stdout
 		}
 
-
 		initialize();
 		
+		ArrayList<String> words = parse(kb);
+		getWordLadderDFS(words.get(0), words.get(1));
+		printLadder(ladder);
 		// TODO methods to read in words, output ladder
 	}
 	
@@ -61,8 +63,8 @@ public class Main {
 			return new ArrayList<String>();
 		ArrayList<String> words = new ArrayList<>(2);
 		String[] twoWords = input.split(" ");
-		words.add(twoWords[0]);
-		words.add(twoWords[1]);
+		words.add(twoWords[0].toUpperCase());
+		words.add(twoWords[1].toUpperCase());
 
 		return words;
 	}
@@ -71,13 +73,10 @@ public class Main {
 
 		// Returned list should be ordered start to end.  Include start and end.
 		// If ladder is empty, return list with just start and end.
-		DFSHelper(start, end);
-
-
-
-
-
-		
+		if(DFSHelper(start, end)) {;
+			return ladder;
+		}
+		else System.out.println("no word ladder found");
 		return ladder; // replace this line later with real return
 	}
 	
@@ -102,19 +101,19 @@ public class Main {
 		}
 		int diffs = 0;
 		for(int  i = 0; i < firstword.length(); i++) {
-			if(firstword.substring(i, i+1).equals(secondword.substring(i, i+1)) ) {
+			if(!firstword.substring(i, i+1).equals(secondword.substring(i, i+1)) ) {
 				diffs++;
 			}
 		}
 		return diffs;
 	}
 
-	private static void DFSHelper(String start, String end) {
+	private static boolean DFSHelper(String start, String end) {
 		colors[dictionary.indexOf(start)] = 1;
 		ladder.add(start);
 		if(start.equals(end)) {
-			ladder.add(end);
-			return;
+			//ladder.add(end);
+			return true;
 		}
 
 		ArrayList<String> neighbors = new ArrayList<String>(dictionary.size());
@@ -125,9 +124,25 @@ public class Main {
 				differences.add(countDifferences(dictionary.get(i), end));
 			}
 		}
-		int minIndex = differences.indexOf(Collections.min(differences));
-
-		DFSHelper(dictionary.get(minIndex), end);
+		int minIndex = 0;
+		if (neighbors.size()>0) {
+			minIndex = differences.indexOf(Collections.min(differences));
+		}
+		if (neighbors.size()==0) {
+			return false;
+		}
+		if(!DFSHelper(dictionary.get(dictionary.indexOf(neighbors.get(minIndex))), end)) {
+			colors[dictionary.indexOf(neighbors.get(minIndex))] = 1;
+			ladder.remove(ladder.size()-1);
+			neighbors.remove(minIndex);
+			differences.remove(minIndex);
+			if (neighbors.size()>0) {
+				minIndex = differences.indexOf(Collections.min(differences));
+				DFSHelper(dictionary.get(dictionary.indexOf(neighbors.get(minIndex))), end);
+			}
+			else return false;
+		}
+		return true;
 	}
 
 	/* Do not modify makeDictionary */
