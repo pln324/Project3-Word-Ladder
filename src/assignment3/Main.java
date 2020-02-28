@@ -70,13 +70,17 @@ public class Main {
 	}
 	
 	public static ArrayList<String> getWordLadderDFS(String start, String end) {
-
+		start = start.toUpperCase();
+		end = end.toUpperCase();
 		// Returned list should be ordered start to end.  Include start and end.
 		// If ladder is empty, return list with just start and end.
 		if(DFSHelper(start, end)) {;
 			return ladder;
 		}
-		else System.out.println("no word ladder found");
+		else {
+			ladder.add(end);
+			System.out.println("no word ladder found");
+		}
 		return ladder; // replace this line later with real return
 	}
 	
