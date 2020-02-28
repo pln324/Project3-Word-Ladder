@@ -20,7 +20,10 @@ import java.io.*;
 public class Main {
 	
 	// static variables and constants only here.
-	
+	private static ArrayList<String> dictionary;
+	private static int[] colors;
+	private static ArrayList<String> ladder;
+
 	public static void main(String[] args) throws Exception {
 		
 		Scanner kb;	// input Scanner for commands
@@ -34,15 +37,17 @@ public class Main {
 			kb = new Scanner(System.in);// default input from Stdin
 			ps = System.out;			// default output to Stdout
 		}
+
+
 		initialize();
 		
 		// TODO methods to read in words, output ladder
 	}
 	
 	public static void initialize() {
-		// initialize your static variables or constants here.
-		// We will call this method before running our JUNIT tests.  So call it 
-		// only once at the start of main.
+		dictionary = new ArrayList<>(makeDictionary());
+		colors = new int[dictionary.size()];
+		ladder = new ArrayList<String>();
 	}
 	
 	/**
@@ -63,12 +68,17 @@ public class Main {
 	}
 	
 	public static ArrayList<String> getWordLadderDFS(String start, String end) {
-		
+
 		// Returned list should be ordered start to end.  Include start and end.
 		// If ladder is empty, return list with just start and end.
-		// TODO some code
+		DFSHelper(start, end);
+
+
+
+
+
 		
-		return null; // replace this line later with real return
+		return ladder; // replace this line later with real return
 	}
 	
     public static ArrayList<String> getWordLadderBFS(String start, String end) {
@@ -86,6 +96,39 @@ public class Main {
 	// TODO
 	// Other private static methods here
 
+	private static int countDifferences(String firstword, String secondword) {
+		if(firstword.length() != secondword.length()) {
+			return -1;
+		}
+		int diffs = 0;
+		for(int  i = 0; i < firstword.length(); i++) {
+			if(firstword.substring(i, i+1).equals(secondword.substring(i, i+1)) ) {
+				diffs++;
+			}
+		}
+		return diffs;
+	}
+
+	private static void DFSHelper(String start, String end) {
+		colors[dictionary.indexOf(start)] = 1;
+		ladder.add(start);
+		if(start.equals(end)) {
+			ladder.add(end);
+			return;
+		}
+
+		ArrayList<String> neighbors = new ArrayList<String>(dictionary.size());
+		ArrayList<Integer> differences = new ArrayList<Integer>(dictionary.size());
+		for(int i  = 0; i < dictionary.size(); i++) {
+			if(countDifferences(start, dictionary.get(i)) == 1 && colors[i] == 0) {
+				neighbors.add(dictionary.get(i));
+				differences.add(countDifferences(dictionary.get(i), end));
+			}
+		}
+		int minIndex = differences.indexOf(Collections.min(differences));
+
+		DFSHelper(dictionary.get(minIndex), end);
+	}
 
 	/* Do not modify makeDictionary */
 	public static Set<String>  makeDictionary () {
