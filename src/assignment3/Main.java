@@ -97,12 +97,12 @@ public class Main {
 		String[] parent = new String[dictionary.size()];
 
 		queue.add(start);
-		DFS_Colors[dictionary.indexOf(start)] = 1;
+		BFS_Colors[dictionary.indexOf(start)] = 1;
 		while(!queue.isEmpty()) {
 			for(int i  = 0; i < dictionary.size(); i++) {									
-				if(countDifferences(queue.peek(), dictionary.get(i)) == 1 && DFS_Colors[i] == 0) {
+				if(countDifferences(queue.peek(), dictionary.get(i)) == 1 && BFS_Colors[i] == 0) {
 					queue.add(dictionary.get(i));
-					DFS_Colors[dictionary.indexOf(dictionary.get(i))] = 1;
+					BFS_Colors[dictionary.indexOf(dictionary.get(i))] = 1;
 
 					parent[i] = queue.peek();
 				}
