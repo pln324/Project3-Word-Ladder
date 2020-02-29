@@ -20,9 +20,9 @@ import java.io.*;
 public class Main {
 	
 	// static variables and constants only here.
-	private static ArrayList<String> dictionary;
-	private static int[] colors;
-	private static ArrayList<String> ladder;
+	private static ArrayList<String> dictionary;		//dictionary as an ArrayList
+	private static int[] colors;						//array for checking if words are discovered
+	private static ArrayList<String> ladder;			//stores word ladder
 
 	public static void main(String[] args) throws Exception {
 		
@@ -86,7 +86,7 @@ public class Main {
 	
     public static ArrayList<String> getWordLadderBFS(String start, String end) {
 		
-		// TODO some code
+		
 		
 		return null; // replace this line later with real return
 	}
@@ -99,6 +99,12 @@ public class Main {
 	// TODO
 	// Other private static methods here
 
+	/**
+	 * 
+	 * @param firstword
+	 * @param secondword
+	 * @return number of differences in letters between first and second word
+	 */
 	private static int countDifferences(String firstword, String secondword) {
 		if(firstword.length() != secondword.length()) {
 			return -1;
@@ -114,33 +120,32 @@ public class Main {
 
 	private static boolean DFSHelper(String start, String end) {
 		colors[dictionary.indexOf(start)] = 1;
-		ladder.add(start);
-		if(start.equals(end)) {
-			//ladder.add(end);
+		ladder.add(start);				//build ladder
+		if(start.equals(end)) {			//if word is found return true
 			return true;
 		}
 
-		ArrayList<String> neighbors = new ArrayList<String>(dictionary.size());
-		ArrayList<Integer> differences = new ArrayList<Integer>(dictionary.size());
-		for(int i  = 0; i < dictionary.size(); i++) {
+		ArrayList<String> neighbors = new ArrayList<String>(dictionary.size());			//array to keep track of all words one letter away from start
+		ArrayList<Integer> differences = new ArrayList<Integer>(dictionary.size());		//count number of different letters from end word
+		for(int i  = 0; i < dictionary.size(); i++) {									
 			if(countDifferences(start, dictionary.get(i)) == 1 && colors[i] == 0) {
-				neighbors.add(dictionary.get(i));
+				neighbors.add(dictionary.get(i));										
 				differences.add(countDifferences(dictionary.get(i), end));
 			}
 		}
-		int minIndex = 0;
+		int minIndex = 0;						
 		if (neighbors.size()>0) {
-			minIndex = differences.indexOf(Collections.min(differences));
+			minIndex = differences.indexOf(Collections.min(differences));				//find word with least number of differences from end word
 		}
-		if (neighbors.size()==0) {
+		if (neighbors.size()==0) {				//if neighbors array is empty, there is a dead end
 			return false;
 		}
-		if(!DFSHelper(dictionary.get(dictionary.indexOf(neighbors.get(minIndex))), end)) {
-			colors[dictionary.indexOf(neighbors.get(minIndex))] = 1;
-			ladder.remove(ladder.size()-1);
-			neighbors.remove(minIndex);
-			differences.remove(minIndex);
-			if (neighbors.size()>0) {
+		if(!DFSHelper(dictionary.get(dictionary.indexOf(neighbors.get(minIndex))), end)) {	//if next word leads to a dead end
+			colors[dictionary.indexOf(neighbors.get(minIndex))] = 1;						//set word to discovered
+			ladder.remove(ladder.size()-1);													//remove word from ladder
+			neighbors.remove(minIndex);														//remove word from potential neighbors
+			differences.remove(minIndex);									
+			if (neighbors.size()>0) {														//continue if there are still neighbors to check
 				minIndex = differences.indexOf(Collections.min(differences));
 				DFSHelper(dictionary.get(dictionary.indexOf(neighbors.get(minIndex))), end);
 			}
