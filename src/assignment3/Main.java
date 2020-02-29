@@ -21,7 +21,7 @@ public class Main {
 	
 	// static variables and constants only here.
 	private static ArrayList<String> dictionary;		//dictionary as an ArrayList
-	private static int[] colors;						//array for checking if words are discovered
+	private static int[] DFS_Colors;						//array for checking if words are discovered
 	private static ArrayList<String> ladder;			//stores word ladder
 
 	public static void main(String[] args) throws Exception {
@@ -41,14 +41,18 @@ public class Main {
 		initialize();
 		
 		ArrayList<String> words = parse(kb);
-		getWordLadderBFS(words.get(0), words.get(1));
-		printLadder(ladder);
-		// TODO methods to read in words, output ladder
+		while(!words.isEmpty()) {
+
+			ladder = getWordLadderDFS(words.get(0), words.get(1));
+			if (ladder.size() > 2)
+				printLadder(ladder);
+			words = parse(kb);
+		}
 	}
 	
 	public static void initialize() {
 		dictionary = new ArrayList<>(makeDictionary());
-		colors = new int[dictionary.size()];
+		DFS_Colors = new int[dictionary.size()];
 		ladder = new ArrayList<String>();
 	}
 	
@@ -74,58 +78,62 @@ public class Main {
 		end = end.toUpperCase();
 		// Returned list should be ordered start to end.  Include start and end.
 		// If ladder is empty, return list with just start and end.
-		if(DFSHelper(start, end)) {;
+		if(DFSHelper(start, end)) {
+			System.out.println("a " + (ladder.size() - 2) + " word ladder exists between " + start.toLowerCase() + " and " + end.toLowerCase());
 			return ladder;
 		}
 		else {
 			ladder.add(end);
-			System.out.println("no word ladder found");
+			System.out.println("no word ladder can be found between " + start.toLowerCase() + " and " + end.toLowerCase());
 		}
-		return ladder; // replace this line later with real return
+		return ladder;
 	}
 	
     public static ArrayList<String> getWordLadderBFS(String start, String end) {
     	start = start.toUpperCase();
 		end = end.toUpperCase();
+		int[] BFS_Colors = new int[dictionary.size()];
 		Queue<String> queue = new LinkedList<String>();
 		String[] parent = new String[dictionary.size()];
-		//ladder.add(start);
+
 		queue.add(start);
-		colors[dictionary.indexOf(start)] = 1;
+		DFS_Colors[dictionary.indexOf(start)] = 1;
 		while(!queue.isEmpty()) {
-			//ladder.add(queue.peek());
-			//int neighborCount = 0;
 			for(int i  = 0; i < dictionary.size(); i++) {									
-				if(countDifferences(queue.peek(), dictionary.get(i)) == 1 && colors[i] == 0) {
+				if(countDifferences(queue.peek(), dictionary.get(i)) == 1 && DFS_Colors[i] == 0) {
 					queue.add(dictionary.get(i));
-					colors[dictionary.indexOf(dictionary.get(i))] = 1;
-					//neighborCount++;
+					DFS_Colors[dictionary.indexOf(dictionary.get(i))] = 1;
+
 					parent[i] = queue.peek();
 				}
 			}
-//			if (neighborCount == 0) {
-//				ladder.remove(ladder.size()-1);
-//			}
+
 			if(queue.remove().equals(end)) {
 				ArrayList<String> reverse = new ArrayList<String>();
 				String previousWord = end;
-				//reverse.add(previousWord);
+
 				while(previousWord != start) {
 					reverse.add(previousWord);
 					previousWord = parent[dictionary.indexOf(previousWord)];
 				}
+				reverse.add(start);
+				Collections.reverse(reverse);
+				System.out.println("a " + (reverse.size() - 2) + " word ladder exists between " + start.toLowerCase() + " and " + end.toLowerCase());
 				return reverse;
-			};
+			}
 		}
 		//populate ladder
-		
-		return null; // replace this line later with real return
+		ArrayList<String> noLadder = new ArrayList<String>(2);
+		noLadder.add(start);
+		noLadder.add(end);
+		System.out.println("no word ladder can be found between " + start.toLowerCase() + " and " + end.toLowerCase());
+		return noLadder;
 	}
     
 	
 	public static void printLadder(ArrayList<String> ladder) {
 		for(String s : ladder)
-			System.out.println(s);
+			System.out.println(s.toLowerCase());
 	}
 	// TODO
 	// Other private static methods here
@@ -150,16 +158,16 @@ public class Main {
 	}
 
 	private static boolean DFSHelper(String start, String end) {
-		colors[dictionary.indexOf(start)] = 1;
+		DFS_Colors[dictionary.indexOf(start)] = 1;
 		ladder.add(start);				//build ladder
 		if(start.equals(end)) {			//if word is found return true
 			return true;
 		}
 
 		ArrayList<String> neighbors = new ArrayList<String>(dictionary.size());			//array to keep track of all words one letter away from start
-		ArrayList<Integer> differences = new ArrayList<Integer>(dictionary.size());		//count number of different letters from end word
+		ArrayList<Integer> differences = new ArrayList<Integer>(dictionary.size());		//count number of different letters from end word to start
 		for(int i  = 0; i < dictionary.size(); i++) {									
-			if(countDifferences(start, dictionary.get(i)) == 1 && colors[i] == 0) {
+			if(countDifferences(start, dictionary.get(i)) == 1 && DFS_Colors[i] == 0) {
 				neighbors.add(dictionary.get(i));										
 				differences.add(countDifferences(dictionary.get(i), end));
 			}
@@ -172,7 +180,7 @@ public class Main {
 			return false;
 		}
 		if(!DFSHelper(dictionary.get(dictionary.indexOf(neighbors.get(minIndex))), end)) {	//if next word leads to a dead end
-			colors[dictionary.indexOf(neighbors.get(minIndex))] = 1;						//set word to discovered
+			DFS_Colors[dictionary.indexOf(neighbors.get(minIndex))] = 1;						//set word to discovered
 			ladder.remove(ladder.size()-1);													//remove word from ladder
 			neighbors.remove(minIndex);														//remove word from potential neighbors
 			differences.remove(minIndex);									
