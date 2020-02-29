@@ -41,7 +41,7 @@ public class Main {
 		initialize();
 		
 		ArrayList<String> words = parse(kb);
-		getWordLadderDFS(words.get(0), words.get(1));
+		getWordLadderBFS(words.get(0), words.get(1));
 		printLadder(ladder);
 		// TODO methods to read in words, output ladder
 	}
@@ -85,8 +85,39 @@ public class Main {
 	}
 	
     public static ArrayList<String> getWordLadderBFS(String start, String end) {
-		
-		
+    	start = start.toUpperCase();
+		end = end.toUpperCase();
+		Queue<String> queue = new LinkedList<String>();
+		String[] parent = new String[dictionary.size()];
+		//ladder.add(start);
+		queue.add(start);
+		colors[dictionary.indexOf(start)] = 1;
+		while(!queue.isEmpty()) {
+			//ladder.add(queue.peek());
+			//int neighborCount = 0;
+			for(int i  = 0; i < dictionary.size(); i++) {									
+				if(countDifferences(queue.peek(), dictionary.get(i)) == 1 && colors[i] == 0) {
+					queue.add(dictionary.get(i));
+					colors[dictionary.indexOf(dictionary.get(i))] = 1;
+					//neighborCount++;
+					parent[i] = queue.peek();
+				}
+			}
+//			if (neighborCount == 0) {
+//				ladder.remove(ladder.size()-1);
+//			}
+			if(queue.remove().equals(end)) {
+				ArrayList<String> reverse = new ArrayList<String>();
+				String previousWord = end;
+				//reverse.add(previousWord);
+				while(previousWord != start) {
+					reverse.add(previousWord);
+					previousWord = parent[dictionary.indexOf(previousWord)];
+				}
+				return reverse;
+			};
+		}
+		//populate ladder
 		
 		return null; // replace this line later with real return
 	}
