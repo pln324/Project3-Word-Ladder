@@ -94,26 +94,25 @@ public class Main {
 		end = end.toUpperCase();
 		int[] BFS_Colors = new int[dictionary.size()];
 		Queue<String> queue = new LinkedList<String>();
-		String[] parent = new String[dictionary.size()];
+		String[] parent = new String[dictionary.size()];		//holds each word's previous node (i.e. the word that comes before it in the ladder)
 
 		queue.add(start);
 		BFS_Colors[dictionary.indexOf(start)] = 1;
 		while(!queue.isEmpty()) {
 			for(int i  = 0; i < dictionary.size(); i++) {									
 				if(countDifferences(queue.peek(), dictionary.get(i)) == 1 && BFS_Colors[i] == 0) {
-					queue.add(dictionary.get(i));
-					BFS_Colors[dictionary.indexOf(dictionary.get(i))] = 1;
-
-					parent[i] = queue.peek();
+					queue.add(dictionary.get(i));							//add each word's neighbors to the queue
+					BFS_Colors[dictionary.indexOf(dictionary.get(i))] = 1;	//when word is a added to queue, discover it
+					parent[i] = queue.peek();								//each word is given their parent word
 				}
 			}
 
-			if(queue.remove().equals(end)) {
+			if(queue.remove().equals(end)) {								//when end word is reached
 				ArrayList<String> reverse = new ArrayList<String>();
 				String previousWord = end;
-
+				//populate ladder
 				while(previousWord != start) {
-					reverse.add(previousWord);
+					reverse.add(previousWord);								//follow path from parent to parent, from end to start
 					previousWord = parent[dictionary.indexOf(previousWord)];
 				}
 				reverse.add(start);
@@ -122,7 +121,6 @@ public class Main {
 				return reverse;
 			}
 		}
-		//populate ladder
 		ArrayList<String> noLadder = new ArrayList<String>(2);
 		noLadder.add(start);
 		noLadder.add(end);
