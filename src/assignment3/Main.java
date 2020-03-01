@@ -42,8 +42,10 @@ public class Main {
 		
 		ArrayList<String> words = parse(kb);
 		while(!words.isEmpty()) {
-
 			ladder = getWordLadderDFS(words.get(0), words.get(1));
+			if (ladder.size() > 2)
+				printLadder(ladder);
+			ladder = getWordLadderBFS(words.get(0), words.get(1));
 			if (ladder.size() > 2)
 				printLadder(ladder);
 			words = parse(kb);
