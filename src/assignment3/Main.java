@@ -43,11 +43,9 @@ public class Main {
 		ArrayList<String> words = parse(kb);
 		while(!words.isEmpty()) {
 			ladder = getWordLadderDFS(words.get(0), words.get(1));
-			if (ladder.size() > 2)
-				printLadder(ladder);
+			printLadder(ladder);
 			ladder = getWordLadderBFS(words.get(0), words.get(1));
-			if (ladder.size() > 2)
-				printLadder(ladder);
+			printLadder(ladder);
 			words = parse(kb);
 		}
 	}
@@ -81,12 +79,12 @@ public class Main {
 		// Returned list should be ordered start to end.  Include start and end.
 		// If ladder is empty, return list with just start and end.
 		if(DFSHelper(start, end)) {
-			System.out.println("a " + (ladder.size() - 2) + " word ladder exists between " + start.toLowerCase() + " and " + end.toLowerCase());
+
 			return ladder;
 		}
 		else {
 			ladder.add(end);
-			System.out.println("no word ladder can be found between " + start.toLowerCase() + " and " + end.toLowerCase());
+
 		}
 		return ladder;
 	}
@@ -119,21 +117,30 @@ public class Main {
 				}
 				reverse.add(start);
 				Collections.reverse(reverse);
-				System.out.println("a " + (reverse.size() - 2) + " word ladder exists between " + start.toLowerCase() + " and " + end.toLowerCase());
+
 				return reverse;
 			}
 		}
 		ArrayList<String> noLadder = new ArrayList<String>(2);
 		noLadder.add(start);
 		noLadder.add(end);
-		System.out.println("no word ladder can be found between " + start.toLowerCase() + " and " + end.toLowerCase());
+
 		return noLadder;
 	}
     
 	
 	public static void printLadder(ArrayList<String> ladder) {
-		for(String s : ladder)
-			System.out.println(s.toLowerCase());
+		String start = ladder.get(0);
+		String end = ladder.get(ladder.size() - 1);
+		if(ladder.size() > 2) {
+			System.out.println("a " + (ladder.size() - 2) + " word ladder exists between " + start.toLowerCase() + " and " + end.toLowerCase());
+			for (String s : ladder)
+				System.out.println(s.toLowerCase());
+		}
+		else
+			System.out.println("no word ladder can be found between " + start.toLowerCase() + " and " + end.toLowerCase());
+
+
 	}
 	// TODO
 	// Other private static methods here
