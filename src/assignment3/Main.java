@@ -190,10 +190,10 @@ public class Main {
 			DFS_Colors[dictionary.indexOf(neighbors.get(minIndex))] = 1;						//set word to discovered
 			ladder.remove(ladder.size()-1);													//remove word from ladder
 			neighbors.remove(minIndex);														//remove word from potential neighbors
-			differences.remove(minIndex);									
+			differences.remove(minIndex);
 			if (neighbors.size()>0) {														//continue if there are still neighbors to check
 				minIndex = differences.indexOf(Collections.min(differences));
-				DFSHelper(dictionary.get(dictionary.indexOf(neighbors.get(minIndex))), end);
+				if(!DFSHelper(dictionary.get(dictionary.indexOf(neighbors.get(minIndex))), end)) return false;
 			}
 			else return false;
 		}
