@@ -83,6 +83,7 @@ public class Main {
 			return ladder;
 		}
 		else {
+			ladder.add(start);
 			ladder.add(end);
 
 		}
@@ -111,7 +112,7 @@ public class Main {
 				ArrayList<String> reverse = new ArrayList<String>();
 				String previousWord = end;
 				//populate ladder
-				while(previousWord != start) {
+				while(!previousWord.equals(start)) {
 					reverse.add(previousWord);								//follow path from parent to parent, from end to start
 					previousWord = parent[dictionary.indexOf(previousWord)];
 				}
@@ -179,25 +180,47 @@ public class Main {
 				differences.add(countDifferences(dictionary.get(i), end));
 			}
 		}
-		int minIndex = 0;						
-		if (neighbors.size()>0) {
-			minIndex = differences.indexOf(Collections.min(differences));				//find word with least number of differences from end word
+
+		for(int i = 0; i < neighbors.size() - 1; i++) {
+			for(int j = 0; j < neighbors.size() - i - 1; j++) {
+				if(differences.get(j) > differences.get(j+1)) {
+					String temp = neighbors.get(j);
+					int temp2 = differences.get(j);
+					neighbors.set(j, neighbors.get(j+1));
+					differences.set(j, differences.get(j+1));
+					neighbors.set(j+1, temp);
+					differences.set(j+1, temp2);
+				}
+			}
 		}
+
 		if (neighbors.size()==0) {				//if neighbors array is empty, there is a dead end
+			ladder.remove(ladder.size()-1);
 			return false;
 		}
-		if(!DFSHelper(dictionary.get(dictionary.indexOf(neighbors.get(minIndex))), end)) {	//if next word leads to a dead end
+		for(String neighbor : neighbors) {
+			if(DFSHelper(neighbor, end))
+				return true;
+			DFS_Colors[dictionary.indexOf(neighbor)] = 1;
+		}
+		ladder.remove(ladder.size() -1);
+		return false;
+		/*if(!DFSHelper(dictionary.get(dictionary.indexOf(neighbors.get(minIndex))), end)) {	//if next word leads to a dead end
 			DFS_Colors[dictionary.indexOf(neighbors.get(minIndex))] = 1;						//set word to discovered
 			ladder.remove(ladder.size()-1);													//remove word from ladder
 			neighbors.remove(minIndex);														//remove word from potential neighbors
 			differences.remove(minIndex);
-			if (neighbors.size()>0) {														//continue if there are still neighbors to check
+			while (neighbors.size()>0) {														//continue if there are still neighbors to check
 				minIndex = differences.indexOf(Collections.min(differences));
-				if(!DFSHelper(dictionary.get(dictionary.indexOf(neighbors.get(minIndex))), end)) return false;
+				if(!DFSHelper(dictionary.get(dictionary.indexOf(neighbors.get(minIndex))), end))  {
+					neighbors.remove(minIndex);
+					differences.remove(minIndex);
+					ladder.remove(ladder.size() -1);
+				}
 			}
-			else return false;
+			return false;
 		}
-		return true;
+		return true; */
 	}
 
 	/* Do not modify makeDictionary */
